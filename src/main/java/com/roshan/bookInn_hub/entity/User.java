@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,14 +29,22 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String email;
 
-    @NotBlank(message = "Name is required")
-    private String name;
+    private String firstName;
+    private String lastName;
+
+    private String providerId;
+
+    private String imageUrl;
 
     @NotBlank(message = "Phone number is required")
     private String phoneNumber;
 
     private String password;
     private String role;
+
+    // OAuth2 fields
+    @Enumerated(EnumType.STRING)
+    private AuthProvider authProvider = AuthProvider.LOCAL;
 
     @OneToMany(mappedBy = "user",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     //Cascade for if we delete user, we also need to delete bookings of user
@@ -72,5 +81,10 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+    public enum AuthProvider {
+        LOCAL,
+        GOOGLE,
+        GITHUB
     }
 }
