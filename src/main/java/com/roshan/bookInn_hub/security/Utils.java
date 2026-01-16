@@ -1,11 +1,15 @@
-package com.sanjo.backend.security;
+package com.roshan.bookInn_hub.security;
 
-import com.sanjo.backend.dto.BookingDTO;
-import com.sanjo.backend.dto.RoomDTO;
-import com.sanjo.backend.dto.UserDTO;
-import com.sanjo.backend.entity.Booking;
-import com.sanjo.backend.entity.Room;
-import com.sanjo.backend.entity.User;
+
+
+import com.roshan.bookInn_hub.dto.UserDTO;
+import com.roshan.bookInn_hub.entity.Booking;
+import com.roshan.bookInn_hub.entity.Room;
+import com.roshan.bookInn_hub.entity.User;
+import com.roshan.bookInn_hub.dto.BookingDTO;
+import com.roshan.bookInn_hub.dto.RoomDTO;
+
+
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.stream.Collectors;

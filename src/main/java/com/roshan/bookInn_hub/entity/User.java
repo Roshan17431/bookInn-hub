@@ -29,8 +29,8 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String email;
 
-    private String firstName;
-    private String lastName;
+    @NotBlank(message = "Name is required")
+    private String name;
 
     private String providerId;
 
