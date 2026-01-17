@@ -1,4 +1,4 @@
-package com.sanjo.backend.security;
+package com.roshan.bookInn_hub.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

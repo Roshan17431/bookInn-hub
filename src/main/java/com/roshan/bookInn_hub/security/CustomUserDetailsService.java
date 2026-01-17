@@ -1,4 +1,4 @@
-package com.sanjo.backend.security;
+package com.roshan.bookInn_hub.security;
 
 import com.sanjo.backend.exception.OurException;
 import com.sanjo.backend.repository.UserRepository;

@@ -1,9 +1,6 @@
 package com.roshan.bookInn_hub.config;
 
 
-import com.roshan.bookInn_hub.security.CustomUserDetailsService;
-import com.roshan.bookInn_hub.security.JWTAuthFilter;
-import com.roshan.bookInn_hub.security.OAuth2AuthenticationSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
