@@ -1,7 +1,7 @@
 package com.roshan.bookInn_hub.security;
 
-import com.sanjo.backend.exception.OurException;
-import com.sanjo.backend.repository.UserRepository;
+import com.roshan.bookInn_hub.exception.OurException;
+import com.roshan.bookInn_hub.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
