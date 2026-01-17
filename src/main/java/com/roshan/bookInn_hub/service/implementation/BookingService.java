@@ -1,5 +1,6 @@
 package com.roshan.bookInn_hub.service.implementation;
 
+import com.roshan.bookInn_hub.dto.BookingDTO;
 import com.roshan.bookInn_hub.dto.Response;
 import com.roshan.bookInn_hub.entity.Booking;
 import com.roshan.bookInn_hub.entity.Room;
@@ -49,12 +50,40 @@ public class BookingService implements IBookingService {
             response.setBookingConfirmationCode(bookingConfirmationCode);;
         }
         catch(OurException e){
-            response.setStatusCode(400);
+            response.setStatusCode(404);
             response.setMessage(e.getMessage());
         }
         catch(Exception e){
             response.setStatusCode(500);
             response.setMessage("Error Saving a booking: " + e.getMessage());
         }
+        return response;
+    }
+
+    @Override
+    public Response findBookingByConfirmationCode(String confirmationCode){
+
+        Response response = new Response();
+
+        try{
+            Booking booking = bookingRepository
+                    .findByBookingConfirmationCode(confirmationCode)
+                    .orElseThrow(()-> new OurException("Booking not found"));
+
+            BookingDTO bookingDTO = Utils.mapBookingEntityToBookingDTOPlusBookedRooms(booking, true);
+            response.setStatusCode(200);
+            response.setMessage("Booking Found");
+            response.setBooking(bookingDTO);
+        }
+        catch(OurException e){
+            response.setStatusCode(404);
+            response.setMessage(e.getMessage());
+        }
+        catch(Exception e){
+            response.setStatusCode(500);
+            response.setMessage("Error finding booking: " + e.getMessage());
+        }
+        return response;
+
     }
 }
