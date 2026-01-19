@@ -12,6 +12,7 @@ import com.roshan.bookInn_hub.repository.UserRepository;
 import com.roshan.bookInn_hub.security.Utils;
 import com.roshan.bookInn_hub.service.interfac.IBookingService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -84,6 +85,29 @@ public class BookingService implements IBookingService {
             response.setMessage("Error finding booking: " + e.getMessage());
         }
         return response;
+    }
 
+    @Override
+    public Response getAllBookings() {
+
+        Response response = new Response();
+
+        try {
+            List<Booking> bookingList = bookingRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+            List<BookingDTO> bookingDTOList = Utils.mapBookingListEntityToBookingListDTO(bookingList);
+            response.setStatusCode(200);
+            response.setMessage("successful");
+            response.setBookingList(bookingDTOList);
+
+        } catch (OurException e) {
+            response.setStatusCode(404);
+            response.setMessage(e.getMessage());
+
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error Getting all bookings: " + e.getMessage());
+
+        }
+        return response;
     }
 }
