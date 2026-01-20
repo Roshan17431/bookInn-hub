@@ -88,26 +88,48 @@ public class BookingService implements IBookingService {
     }
 
     @Override
-    public Response getAllBookings() {
+    public Response getAllBookings(){
 
         Response response = new Response();
 
-        try {
-            List<Booking> bookingList = bookingRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+        try{
+            List<Booking> bookingList = bookingRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
             List<BookingDTO> bookingDTOList = Utils.mapBookingListEntityToBookingListDTO(bookingList);
             response.setStatusCode(200);
             response.setMessage("successful");
             response.setBookingList(bookingDTOList);
-
-        } catch (OurException e) {
+        }
+        catch(OurException e){
             response.setStatusCode(404);
             response.setMessage(e.getMessage());
-
-        } catch (Exception e) {
+        }
+        catch(Exception e){
             response.setStatusCode(500);
-            response.setMessage("Error Getting all bookings: " + e.getMessage());
-
+            response.setMessage("Error fetching all bookings: " + e.getMessage());
         }
         return response;
     }
+
+    public Response cancelBooking(Long bookingId){
+
+        Response response = new Response();
+
+        try{
+            bookingRepository.findById(bookingId).orElseThrow(()-> new OurException("Booking does not exist"));
+            bookingRepository.deleteById(bookingId);
+            response.setStatusCode(200);
+            response.setMessage("Booking Cancelled Successfully");
+        }
+        catch(OurException e){
+            response.setStatusCode(404);
+            response.setMessage(e.getMessage());
+        }
+        catch(Exception e){
+            response.setStatusCode(500);
+            response.setMessage("Error cancelling booking: " + e.getMessage());
+        }
+        return response;
+    }
+
+   
 }
