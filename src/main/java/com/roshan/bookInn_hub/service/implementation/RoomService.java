@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -43,6 +44,10 @@ public class RoomService implements IRoomService {
             response.setMessage("Error Occurred while adding room " + e.getMessage());
         }
         return response;
+    }
 
+    @Override
+    public List<String> getAllRoomTypes(){
+        return roomRepository.findDistinctRoomType();
     }
 }
