@@ -11,4 +11,6 @@ public interface IRoomService {
     Response addNewRoom(MultipartFile photo, String roomType, BigDecimal price, String description);
 
     List<String> getAllRoomTypes();
+
+    Response getAllRooms();
 }

@@ -7,6 +7,7 @@ import com.roshan.bookInn_hub.repository.RoomRepository;
 import com.roshan.bookInn_hub.security.Utils;
 import com.roshan.bookInn_hub.service.interfac.IRoomService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,5 +50,23 @@ public class RoomService implements IRoomService {
     @Override
     public List<String> getAllRoomTypes(){
         return roomRepository.findDistinctRoomType();
+    }
+
+    @Override
+    public Response getAllRooms(){
+        Response response = new Response();
+        try{
+            List<Room> rooms = roomRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
+            List<RoomDTO> dto = Utils.mapRoomListEntityToRoomListDTO(rooms);
+
+            response.setStatusCode(200);
+            response.setMessage("Successfull");
+            response.setRoomList(dto);
+        }
+        catch(Exception e){
+            response.setStatusCode(500);
+            response.setMessage("Error fetching all rooms: " + e.getMessage());
+        }
+        return response;
     }
 }
