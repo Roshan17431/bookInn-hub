@@ -13,4 +13,6 @@ public interface IRoomService {
     List<String> getAllRoomTypes();
 
     Response getAllRooms();
+
+    Response deleteRoom(Long roomId);
 }
