@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -122,4 +123,31 @@ public class RoomService implements IRoomService {
         }
         return response;
     }
+
+    @Override
+    public Response getRoomById(Long roomId){
+        Response response = new Response();
+        try{
+            Room room = roomRepository.findById(roomId).orElseThrow(()-> new OurException("Room not found"));
+            RoomDTO roomDTO = Utils.mapRoomEntityToRoomDTOPlusBookings(room);
+            response.setStatusCode(200);
+            response.setMessage("successful");
+            response.setRoom(roomDTO);
+        }
+        catch(OurException e){
+            response.setStatusCode(404);
+            response.setMessage(e.getMessage());
+        }
+        catch(Exception e){
+            response.setStatusCode(500);
+            response.setMessage("Error fetching room by id: " + e.getMessage());
+        }
+        return response;
+    }
+
+
+
+
+
+
 }

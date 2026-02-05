@@ -18,4 +18,5 @@ public interface IRoomService {
 
     Response updateRoom(Long roomId, String description, String roomType, BigDecimal roomPrice, MultipartFile photo);
 
+
 }
