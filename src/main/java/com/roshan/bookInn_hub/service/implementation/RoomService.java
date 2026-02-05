@@ -145,7 +145,22 @@ public class RoomService implements IRoomService {
         return response;
     }
 
-
+    @Override
+    public Response getAvailableRoomsByDataAndType(LocalDate checkInDate, LocalDate checkOutDate, String roomType){
+        Response response = new Response();
+        try{
+            List<Room> availableRooms = roomRepository.findAllAvailableRoomsByDatesAndTypes(checkInDate,checkOutDate,roomType);
+            List<RoomDTO> roomDTOList = Utils.mapRoomListEntityToRoomListDTO(availableRooms);
+            response.setStatusCode(200);
+            response.setMessage("successful");
+            response.setRoomList(roomDTOList);
+        }
+        catch(Exception e){
+            response.setStatusCode(500);
+            response.setMessage("Error fetching available rooms: " + e.getMessage());
+        }
+        return response;
+    }
 
 
 
