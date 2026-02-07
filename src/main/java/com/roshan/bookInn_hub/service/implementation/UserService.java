@@ -1,12 +1,17 @@
 package com.roshan.bookInn_hub.service.implementation;
 
+import com.roshan.bookInn_hub.dto.Response;
+import com.roshan.bookInn_hub.dto.UserDTO;
+import com.roshan.bookInn_hub.exception.OurException;
 import com.roshan.bookInn_hub.repository.UserRepository;
 import com.roshan.bookInn_hub.security.JWTUtils;
+import com.roshan.bookInn_hub.security.Utils;
 import com.roshan.bookInn_hub.service.interfac.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.roshan.bookInn_hub.entity.User;
 
 @Service
 @RequiredArgsConstructor
@@ -17,5 +22,31 @@ public class UserService implements IUserService {
     private final JWTUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
 
+    @Override
+    public Response register(User user){
+        Response response = new Response();
+        try{
+            if(user.getRole() == null || user.getRole().isBlank()){
+                user.setRole("USER");
+            }
+            if(userRepository.existsByEmail(user.getEmail())){
+                throw new OurException(user.getEmail()+"already exists");
+            }
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            User savedUser = userRepository.save(user);
 
+            UserDTO  userDTO = Utils.mapUserEntityToUserDTO(savedUser);
+            response.setStatusCode(200);
+            response.setUser(userDTO);
+        }
+        catch(OurException e){
+            response.setStatusCode(400);
+            response.setMessage(e.getMessage());
+        }
+        catch(Exception e){
+            response.setStatusCode(500);
+            response.setMessage("Error Occurred During User Registration " + e.getMessage());
+        }
+        return response;
+    }
 }
