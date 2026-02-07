@@ -11,4 +11,6 @@ public interface IUserService {
     Response login(LoginRequest loginRequest);
 
     Response getAllUsers();
+
+    Response getUserBookingHistory(String userId);
 }
