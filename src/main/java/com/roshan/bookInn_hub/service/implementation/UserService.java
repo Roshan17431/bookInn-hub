@@ -1,5 +1,6 @@
 package com.roshan.bookInn_hub.service.implementation;
 
+import com.roshan.bookInn_hub.dto.LoginRequest;
 import com.roshan.bookInn_hub.dto.Response;
 import com.roshan.bookInn_hub.dto.UserDTO;
 import com.roshan.bookInn_hub.exception.OurException;
@@ -9,6 +10,7 @@ import com.roshan.bookInn_hub.security.Utils;
 import com.roshan.bookInn_hub.service.interfac.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.roshan.bookInn_hub.entity.User;
@@ -46,6 +48,33 @@ public class UserService implements IUserService {
         catch(Exception e){
             response.setStatusCode(500);
             response.setMessage("Error Occurred During User Registration " + e.getMessage());
+        }
+        return response;
+    }
+
+    @Override
+    public Response login(LoginRequest loginRequest){
+        Response response = new Response();
+
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+            var user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() -> new OurException("user Not found"));
+
+            var token = jwtUtils.generateToken(user);
+            response.setStatusCode(200);
+            response.setToken(token);
+            response.setRole(user.getRole());
+            response.setExpirationTime("7 Days");
+            response.setMessage("successful");
+
+        } catch (OurException e) {
+            response.setStatusCode(404);
+            response.setMessage(e.getMessage());
+
+        } catch (Exception e) {
+
+            response.setStatusCode(500);
+            response.setMessage("Error Occurred During User Login " + e.getMessage());
         }
         return response;
     }
