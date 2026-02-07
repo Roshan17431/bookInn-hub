@@ -15,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.roshan.bookInn_hub.entity.User;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserService implements IUserService {
@@ -75,6 +77,27 @@ public class UserService implements IUserService {
 
             response.setStatusCode(500);
             response.setMessage("Error Occurred During User Login " + e.getMessage());
+        }
+        return response;
+    }
+
+    @Override
+    public Response getAllUsers(){
+        Response response = new Response();
+        try{
+            List<User> userList = userRepository.findAll();
+            List<UserDTO> userDTOList = Utils.mapUserListEntityToUserListDTO(userList);
+            response.setStatusCode(200);
+            response.setMessage("successful");
+            response.setUserList(userDTOList);
+        }
+        catch(OurException e){
+            response.setStatusCode(400);
+            response.setMessage(e.getMessage());
+        }
+        catch(Exception e){
+            response.setStatusCode(500);
+            response.setMessage("Error fetching all users: " + e.getMessage());
         }
         return response;
     }

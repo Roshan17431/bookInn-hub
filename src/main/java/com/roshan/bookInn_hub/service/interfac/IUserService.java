@@ -9,4 +9,6 @@ public interface IUserService {
     Response register(User user);
 
     Response login(LoginRequest loginRequest);
+
+    Response getAllUsers();
 }
