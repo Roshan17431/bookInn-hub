@@ -123,4 +123,26 @@ public class UserService implements IUserService {
         }
         return response;
     }
+
+    @Override
+    public Response deleteUser(String userId) {
+        Response response = new Response();
+        try {
+            User user =userRepository.findById(Long.valueOf(userId)).orElseThrow(
+                    () -> new OurException("User not Found"));
+            userRepository.deleteById(Long.valueOf(userId));
+
+            response.setStatusCode(200);
+            response.setMessage("Successful");
+
+        }catch (OurException e) {
+            response.setStatusCode(400);
+            response.setMessage(e.getMessage());
+        }
+        catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error Occurred While Getting Deleting User "+e.getMessage());
+        }
+        return response;
+    }
 }
