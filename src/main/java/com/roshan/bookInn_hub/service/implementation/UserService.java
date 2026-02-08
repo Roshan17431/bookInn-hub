@@ -145,4 +145,27 @@ public class UserService implements IUserService {
         }
         return response;
     }
+
+    @Override
+    public Response getUserById(String userId){
+        Response response = new Response();
+        try{
+            User user = userRepository.findById(Long.valueOf(userId)).orElseThrow(
+                    () -> new OurException("User not found")
+            );
+            UserDTO dto = Utils.mapUserEntityToUserDTO(user);
+            response.setStatusCode(200);
+            response.setMessage("successful");
+            response.setUser(dto);
+        }
+        catch(OurException e){
+            response.setStatusCode(400);
+            response.setMessage(e.getMessage());
+        }
+        catch(Exception e){
+            response.setStatusCode(500);
+            response.setMessage("Error fetching user by id: " + e.getMessage());
+        }
+        return response;
+    }
 }

@@ -15,4 +15,6 @@ public interface IUserService {
     Response getUserBookingHistory(String userId);
 
     Response deleteUser(String userId);
+
+    Response getUserById(String userId);
 }
