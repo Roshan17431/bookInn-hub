@@ -43,4 +43,10 @@ public class UserController {
         Response response = userService.getMyInfo(email);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
+
+    @GetMapping("/get-user-booking/{userId}")
+    public ResponseEntity<Response> getUserBookingHistory(@PathVariable("userId") String userId){
+        Response response = userService.getUserBookingHistory(userId);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
 }
