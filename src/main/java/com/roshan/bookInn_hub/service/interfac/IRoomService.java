@@ -17,6 +17,8 @@ public interface IRoomService {
 
     Response deleteRoom(Long roomId);
 
+    Response getAllAvailableRooms();
+
     Response updateRoom(Long roomId, String description, String roomType, BigDecimal roomPrice, MultipartFile photo);
 
     Response getRoomById(Long roomId);
