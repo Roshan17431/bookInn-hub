@@ -3,12 +3,14 @@ package com.roshan.bookInn_hub.controller;
 import com.roshan.bookInn_hub.dto.Response;
 import com.roshan.bookInn_hub.service.interfac.IRoomService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -17,7 +19,6 @@ import java.util.List;
 public class RoomController {
 
     private final IRoomService roomService;
-
 
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -59,4 +60,24 @@ public class RoomController {
         Response response = roomService.getAllAvailableRooms();
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
+
+    @GetMapping("/available-rooms-by-date-and-type")
+    public ResponseEntity<Response> getAvailableRoomsByDateAndType(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
+            @RequestParam(required = false) String roomType
+    ) {
+        if (checkInDate == null || roomType == null || roomType.isBlank() || checkOutDate == null) {
+            Response response = new Response();
+            response.setStatusCode(400);
+            response.setMessage("Please provide values for all fields(checkInDate, roomType,checkOutDate)");
+            return ResponseEntity.status(response.getStatusCode()).body(response);
+        }
+        Response response = roomService.getAvailableRoomsByDataAndType(checkInDate, checkOutDate, roomType);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
+    
+
+
 }
