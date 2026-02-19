@@ -95,8 +95,6 @@ public class RoomController {
     public ResponseEntity<Response> deleteRoom(@PathVariable Long roomId) {
         Response response = roomService.deleteRoom(roomId);
         return ResponseEntity.status(response.getStatusCode()).body(response);
-
     }
-
 
 }

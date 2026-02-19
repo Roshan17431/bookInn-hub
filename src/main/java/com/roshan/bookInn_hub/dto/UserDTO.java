@@ -1,8 +1,11 @@
 package com.roshan.bookInn_hub.dto;
 
+
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.roshan.bookInn_hub.dto.BookingDTO;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -11,13 +14,8 @@ public class UserDTO {
 
     private long id;
     private String email;
-    private String firstName;
-    private String lastName;
+    private String name;
     private String phoneNumber;
     private String role;
-    private String authProvider;
-    private String imageUrl;
-
-
-    private List<BookingDTO> bookings;
+    private List<BookingDTO> bookings = new ArrayList<>();
 }

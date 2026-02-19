@@ -1,7 +1,7 @@
 package com.roshan.bookInn_hub.config;
 
-
-import lombok.RequiredArgsConstructor;
+import com.roshan.bookInn_hub.security.CustomUserDetailsService;
+import com.roshan.bookInn_hub.security.JWTAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,44 +20,62 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final CustomUserDetailsService userService;
     private final JWTAuthFilter jwtAuthFilter;
-    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    // Constructor-based dependency injection
+    public SecurityConfig(CustomUserDetailsService userService, JWTAuthFilter jwtAuthFilter) {
+        this.userService = userService;
+        this.jwtAuthFilter = jwtAuthFilter;
     }
 
+    /**
+     * Configures Spring Security's HTTP settings using the modern lambda-style DSL.
+     */
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                // Disable CSRF (not needed for JWT-based stateless APIs)
+                .csrf(AbstractHttpConfigurer::disable)
+
+                // Enable default CORS configuration
+                .cors(Customizer.withDefaults())
+
+                // Configure route-level security
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/**", "/rooms/**", "/bookings/**").permitAll() // Public routes
+                        .anyRequest().authenticated() // All other routes require authentication
+                )
+
+                // Configure stateless session management for JWT
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+
+                // Register custom UserDetailsService for authentication
+                .userDetailsService(userService)
+
+                // Register custom JWT filter before the built-in auth filter
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+    /**
+     * Exposes the AuthenticationManager to be used in controllers/services.
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
+    /**
+     * BCrypt password encoder bean to hash and verify passwords securely.
+     */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/oauth2/**").permitAll()
-                        .requestMatchers("/login/oauth2/**").permitAll()
-                        .requestMatchers("/actuator/**").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .oauth2Login(oauth2 -> oauth2
-                        .successHandler(oAuth2AuthenticationSuccessHandler)
-                )
-                .userDetailsService(userService)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
