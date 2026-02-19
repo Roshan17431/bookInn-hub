@@ -2,7 +2,6 @@ package com.roshan.bookInn_hub.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.roshan.bookInn_hub.dto.BookingDTO;
 import lombok.Data;
 
 import java.util.ArrayList;
