@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: bookinn-hub
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: DB_URL
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: AWS_ACCESS_KEY
+        sync: false
+      - key: AWS_SECRET_KEY
+        sync: false
+      - key: BUCKET_NAME
+        sync: false
+      - key: SERVER_PORT
+        value: 8080
