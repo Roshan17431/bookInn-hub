@@ -9,8 +9,9 @@ COPY pom.xml .
 # Download dependencies (helps with caching)
 RUN mvn dependency:go-offline
 
-# Copy project source
-COPY . .
+# Copy project source into Maven-standard layout
+COPY main ./src/main
+COPY test ./src/test
 
 # Package the application
 RUN mvn clean package -DskipTests
