@@ -1,24 +1,19 @@
-# Use an official JDK runtime as a parent image
-FROM eclipse-temurin:21-jdk AS build
+# Build stage
+FROM maven:3.9.9-eclipse-temurin-21 AS build
 
 WORKDIR /app
 
-# Copy Maven wrapper & project files
-COPY src/pom.xml .
-COPY src/mvnw .
-COPY .mvn .mvn
-
-# Give execution permission to mvnw
-RUN chmod +x mvnw
+# Copy pom first for better dependency caching
+COPY pom.xml .
 
 # Download dependencies (helps with caching)
-RUN ./mvnw dependency:go-offline
+RUN mvn dependency:go-offline
 
-# Copy source code
-COPY src ./src
+# Copy project source
+COPY . .
 
 # Package the application
-RUN ./mvnw clean package -DskipTests
+RUN mvn clean package -DskipTests
 
 # ------------------ Final Stage ------------------
 FROM eclipse-temurin:21-jre
