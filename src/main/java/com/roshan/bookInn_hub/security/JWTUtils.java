@@ -2,6 +2,7 @@ package com.roshan.bookInn_hub.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.DecodingException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.function.Function;
 
@@ -26,9 +28,23 @@ public class JWTUtils {
     //Executes only after Injecting secretString
     @PostConstruct
     public void init() {
+        String normalizedSecret = secretString == null ? "" : secretString.trim();
+        if (normalizedSecret.startsWith("\"") && normalizedSecret.endsWith("\"") && normalizedSecret.length() > 1) {
+            normalizedSecret = normalizedSecret.substring(1, normalizedSecret.length() - 1);
+        }
+        normalizedSecret = normalizedSecret
+                .replace("\\n", "")
+                .replace("\n", "")
+                .replace("\r", "");
 
-        //Converts the Base64-encoded string into a byte[] array
-        byte[] keyBytes = Decoders.BASE64.decode(secretString);
+        byte[] keyBytes;
+        try {
+            // Prefer Base64 secret values
+            keyBytes = Decoders.BASE64.decode(normalizedSecret);
+        } catch (DecodingException ex) {
+            // Fallback for plain-text env secret values
+            keyBytes = normalizedSecret.getBytes(StandardCharsets.UTF_8);
+        }
 
         //Generates a secure HMAC SHA-based key for signing JWTs.
         this.Key = Keys.hmacShaKeyFor(keyBytes);
@@ -66,4 +82,3 @@ public class JWTUtils {
         return extractClaims(token,Claims::getExpiration).before(new Date());
     }
 }
-
