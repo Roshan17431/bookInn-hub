@@ -10,8 +10,8 @@ COPY pom.xml .
 RUN mvn dependency:go-offline
 
 # Copy project source into Maven-standard layout
-COPY main ./src/main
-COPY test ./src/test
+COPY src/main ./src/main
+COPY src/test ./src/test
 
 # Package the application
 RUN mvn clean package -DskipTests
